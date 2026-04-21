@@ -10,7 +10,7 @@ router.post(
   "/transfer",
   authMiddleware,
   [
-    body("toWalletAddress").isString().isLength({ min: 42, max: 42 }),
+    body("toWalletAddress").isString().matches(/^0x[a-fA-F0-9]{40}$/),
     body("amount").isFloat({ gt: 0 })
   ],
   validateRequest,

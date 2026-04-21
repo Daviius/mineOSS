@@ -8,7 +8,10 @@ const router = Router();
 router.post(
   "/register",
   [
-    body("walletAddress").isString().isLength({ min: 42, max: 42 }).withMessage("walletAddress must be 42 chars"),
+    body("walletAddress")
+      .isString()
+      .matches(/^0x[a-fA-F0-9]{40}$/)
+      .withMessage("walletAddress must be a valid EVM address"),
     body("username").isString().isLength({ min: 3, max: 32 }),
     body("password").isString().isLength({ min: 8 })
   ],
@@ -19,7 +22,7 @@ router.post(
 router.post(
   "/login",
   [
-    body("walletAddress").isString().isLength({ min: 42, max: 42 }),
+    body("walletAddress").isString().matches(/^0x[a-fA-F0-9]{40}$/),
     body("password").isString().isLength({ min: 8 })
   ],
   validateRequest,

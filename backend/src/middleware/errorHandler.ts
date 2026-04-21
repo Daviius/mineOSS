@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { ValidationError } from "express-validator";
 import { ApiError } from "../utils/errors";
 
+const hasValidationErrors = (error: unknown): error is { errors: ValidationError[] } =>
+  Array.isArray((error as { errors?: ValidationError[] })?.errors);
+
 export const notFoundHandler = (_req: Request, _res: Response, next: NextFunction) => {
   next(new ApiError(404, "Route not found"));
 };
@@ -12,10 +15,10 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
-  if (Array.isArray((err as unknown as { errors?: ValidationError[] }).errors)) {
+  if (hasValidationErrors(err)) {
     return res.status(400).json({
       message: "Validation failed",
-      errors: (err as unknown as { errors: ValidationError[] }).errors
+      errors: err.errors
     });
   }
 

@@ -40,7 +40,7 @@ export const transferToken = async (req: AuthRequest, res: Response, next: NextF
       await fromUser.save({ session });
       await toUser.save({ session });
 
-      const txHash = `0x${crypto.randomBytes(32).toString("hex")}`;
+      const mockTxHash = `0x${crypto.randomBytes(32).toString("hex")}`;
 
       const [transaction] = await Transaction.create(
         [
@@ -50,7 +50,7 @@ export const transferToken = async (req: AuthRequest, res: Response, next: NextF
             amount,
             fee,
             status: "success",
-            txHash
+            txHash: mockTxHash
           }
         ],
         { session }

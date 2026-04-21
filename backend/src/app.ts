@@ -18,9 +18,21 @@ dotenv.config({ quiet: true });
 export const app = express();
 
 app.use(helmet());
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000")
+  .split(",")
+  .map((entry) => entry.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: (process.env.CORS_ORIGIN || "*").split(",").map((entry) => entry.trim())
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Origin not allowed by CORS"));
+    }
   })
 );
 app.use(express.json());
